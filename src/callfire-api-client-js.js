@@ -1,45 +1,57 @@
 'use strict';
 
-var Swagger = require('swagger-client');
+const Swagger = require('swagger-client');
 
-console.log('init.');
+let _login = null;
+let _password = null;
 
-
-// ------------------------------------------------------------------------------------------
-
+/**
+ *
+ */
 class CallfireClient {
-  constructor() {
-    this._swaggerUrl = 'https://api.callfire.com/v2/api-docs/swagger.json';
-    this._swaggerClient = new Swagger({
-      url: this._swaggerUrl,
-      authorizations: {
-        basicAuth: new Swagger.PasswordAuthorization('login', 'password'),
-      },
-      success: function () {
-        console.log("init swagger client - ok.");
-        client.api().me.getAccount({responseContentType: 'application/json'}, function (account) {
-          console.log('account', account);
-        });
-      },
-      failure: function (err) {
-        console.log("failed to initialize swagger client: " + err);
-      }
+
+  constructor(login, password, options) {
+    Object.assign(this, options || {});
+    CallfireClient.validateCredentials(login, password);
+    _login = login;
+    _password = password;
+  }
+
+  ready() {
+
+    return new Promise((resolve, reject) => {
+      const swaggerClient = new Swagger({
+        url: CallfireClient.swaggerUrl(),
+        authorizations: {
+          basicAuth: new Swagger.PasswordAuthorization(_login, _password),
+        },
+        success: () => {
+          this.swaggerClient = swaggerClient;
+          resolve(this);
+          Object.assign(this, swaggerClient.apis || {});
+        },
+        failure: (err) => {
+          throw new Error('failed to initialize swagger client:' + err);
+        }
+      });
     });
   }
 
-  api() {
-    return this._swaggerClient;
+  static validateCredentials(login, password) {
+    if (login == 'undefined' || login == null || password == 'undefined' || password == null) {
+      throw new Error('API credentials cannot be empty.');
+    }
   }
 
   static basePath() {
     return 'https:/api.callfire.com/v2/';
   }
 
-
+  static swaggerUrl() {
+    return CallfireClient.basePath() + 'api-docs/swagger.json';
+  }
 }
 
-export default CallfireClient;
+// ----------------------------------------------------------------
 
-let client = new CallfireClient();
-
-console.log(CallfireClient.basePath());
+module.exports = CallfireClient;

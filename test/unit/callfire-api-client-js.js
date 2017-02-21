@@ -1,18 +1,30 @@
-import CallfireApiClient from '../../src/callfire-api-client-js';
+import CallfireClient from '../../src/callfire-api-client-js';
 
-describe('CallfireApiClient', () => {
-  describe('Greet function', () => {
-    beforeEach(() => {
-      spy(CallfireApiClient, 'greet');
-      CallfireApiClient.greet();
-    });
+describe('CallfireClient', () => {
+  it('getAccount and sendText', () => {
+    let client = new CallfireClient('login', 'password', {debug: true});
 
-    it('should have been run once', () => {
-      expect(CallfireApiClient.greet).to.have.been.calledOnce;
-    });
+    client.ready().then((client) => {
+      client.me.getAccount({responseContentType: 'application/json'},
+        (response) => {
+          console.log('account', response.obj);
+        },
+        (err) => {
+          throw Error(err);
+        });
 
-    it('should have always returned hello', () => {
-      expect(CallfireApiClient.greet).to.have.always.returned('hello');
-    });
+      client.texts.sendTexts(
+        [{
+          phoneNumber: '16505754427',
+          message: 'test1'
+        }],
+        {requestContentType: 'application/json', responseContentType: 'application/json'},
+        (response) => {
+          console.log('account', response.obj);
+        },
+        (err) => {
+          throw Error(err + err.data);
+        });
+    })
   });
 });
