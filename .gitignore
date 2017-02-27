@@ -36,3 +36,4 @@ callfire-api-client-js.iml
 callfire-api-client-js.ipr
 callfire-api-client-js.iws
 dist/
+lib/

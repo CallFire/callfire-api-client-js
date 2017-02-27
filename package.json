@@ -2,7 +2,7 @@
   "name": "callfire-api-client-js",
   "version": "0.0.1",
   "description": "CallFire API v2 JS Client",
-  "main": "dist/callfire-api-client-js.js",
+  "main": "lib/callfire-api-client-js.js",
   "scripts": {
     "test": "gulp",
     "lint": "gulp lint",
