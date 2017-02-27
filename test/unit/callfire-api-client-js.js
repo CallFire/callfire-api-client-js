@@ -1,28 +1,43 @@
 import CallfireClient from '../../src/callfire-api-client-js';
 
 describe('CallfireClient', () => {
-  it('getAccount and sendText', () => {
-    let client = new CallfireClient('login', 'password', {debug: true});
+  let login = '...';
+  let password = '...';
+
+  it('getAccount', () => {
+    let client = new CallfireClient(login, password, {debug: true});
 
     client.ready().then((client) => {
-      client.me.getAccount({responseContentType: 'application/json'},
-        (response) => {
+      client.me.getAccount()
+        .then((response) => {
           console.log('account', response.obj);
-        },
-        (err) => {
-          throw Error(err);
+        })
+        .catch((err) => {
+          throw Error(err + err.data);
         });
+    })
+  });
 
-      client.texts.sendTexts(
-        [{
-          phoneNumber: '16505754427',
-          message: 'test1'
-        }],
-        {requestContentType: 'application/json', responseContentType: 'application/json'},
-        (response) => {
-          console.log('account', response.obj);
-        },
-        (err) => {
+  it('sendTexts', () => {
+    let client = new CallfireClient(login, password);
+
+    client.ready().then((client) => {
+      client.texts.sendTexts({
+        body: [
+          {
+            phoneNumber: '14243876936',
+            message: 'test message 1'
+          },
+          {
+            phoneNumber: '14243876936',
+            message: 'test message 2'
+          }
+        ]
+      })
+        .then((response) => {
+          console.log('texts', response.obj);
+        })
+        .catch((err) => {
           throw Error(err + err.data);
         });
     })
