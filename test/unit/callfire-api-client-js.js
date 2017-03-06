@@ -5,15 +5,15 @@ describe('CallfireClient', () => {
   let password = '...';
 
   it('getAccount', () => {
-    let client = new CallfireClient(login, password, {debug: true});
+    let client = new CallfireClient(login, password);
 
-    client.ready().then((client) => {
+    client.ready(() => {
       client.me.getAccount()
         .then((response) => {
           console.log('account', response.obj);
         })
         .catch((err) => {
-          throw Error(err + err.data);
+          throw Error('err ' + err + err.data);
         });
     })
   });
@@ -21,25 +21,29 @@ describe('CallfireClient', () => {
   it('sendTexts', () => {
     let client = new CallfireClient(login, password);
 
-    client.ready().then((client) => {
-      client.texts.sendTexts({
-        body: [
-          {
-            phoneNumber: '14243876936',
-            message: 'test message 1'
-          },
-          {
-            phoneNumber: '14243876936',
-            message: 'test message 2'
-          }
-        ]
-      })
-        .then((response) => {
-          console.log('texts', response.obj);
+    client.ready(() => {
+        client.texts.sendTexts({
+          body: [
+            {
+              phoneNumber: '14243876936',
+              message: 'test message 1'
+            },
+            {
+              phoneNumber: '14243876936',
+              message: 'test message 2'
+            }
+          ]
         })
-        .catch((err) => {
-          throw Error(err + err.data);
-        });
-    })
+          .then((response) => {
+            console.log('texts', response.obj);
+          })
+          .catch((err) => {
+            throw new Error(err + err.data);
+          });
+      },
+      (clientError) => {
+        throw new Error(clientError + clientError.data);
+      }
+    );
   });
 });

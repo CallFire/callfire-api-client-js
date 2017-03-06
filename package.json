@@ -1,6 +1,6 @@
 {
   "name": "callfire-api-client-js",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "CallFire API v2 JS Client",
   "main": "lib/callfire-api-client-js.js",
   "scripts": {

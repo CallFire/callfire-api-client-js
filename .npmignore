@@ -1,4 +1,15 @@
 /node_modules/
 /.idea/
+callfire-api-client-js.iml
+callfire-api-client-js.ipr
+callfire-api-client-js.iws
 /src/
+/tmp/
+/test/
 .babelrc
+.editorconfig
+.eslintrc
+.travis.yml
+.npmignore
+gulpfile.js
+*.log

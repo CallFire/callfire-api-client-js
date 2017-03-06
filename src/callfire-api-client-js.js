@@ -2,9 +2,6 @@
 
 const Swagger = require('swagger-client');
 
-let _login = null;
-let _password = null;
-
 /**
  * Construct API client for CallFire API v2
  *
@@ -45,8 +42,14 @@ class CallfireClient {
   constructor(login, password, options) {
     Object.assign(this, options || {});
     CallfireClient.validateCredentials(login, password);
-    _login = login;
-    _password = password;
+
+    this.swaggerClient = new Swagger({
+      url: CallfireClient.swaggerUrl(),
+      authorizations: {
+        basicAuth: new Swagger.PasswordAuthorization(login, password),
+      },
+      usePromise: true
+    });
   }
 
   /**
@@ -54,22 +57,14 @@ class CallfireClient {
    *
    * @return {Swagger}
    */
-  ready() {
-    const swaggerClient = new Swagger({
-      url: CallfireClient.swaggerUrl(),
-      authorizations: {
-        basicAuth: new Swagger.PasswordAuthorization(_login, _password),
-      },
-      usePromise: true,
-      success: () => {
-        this.swaggerClient = swaggerClient;
-        Object.assign(this, swaggerClient.apis || {});
-      },
-      failure: (err) => {
-        throw new Error('failed to initialize swagger client:' + err);
-      }
-    });
-    return swaggerClient;
+  ready(resolve, reject) {
+    this.swaggerClient.then((client) => {
+      Object.assign(this, client.apis || {});
+      resolve(client);
+    })
+      .catch((error) => {
+        reject(error)
+      });
   }
 
   /**
@@ -90,7 +85,7 @@ class CallfireClient {
    * @return {string}
    */
   static basePath() {
-    return 'https:/api.callfire.com/v2/';
+    return 'https://api.callfire.com/v2/';
   }
 
   /**
@@ -103,4 +98,4 @@ class CallfireClient {
   }
 }
 
-export default CallfireClient;
+exports = module.exports = CallfireClient;

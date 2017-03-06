@@ -1,4 +1,4 @@
-# CallFire API v2 JS Client
+# CallFire API v2 Javascript Client
 
 See setup instructions at **[CallFire Developers Site](https://developers.callfire.com/callfire-api-client-js.html)**
 
