@@ -61,7 +61,9 @@ function build() {
       //   jquery: true
       // }
       // would externalize the `jquery` module.
-      externals: {},
+      externals: {
+        'swagger-client':'swagger-client'
+      },
       module: {
         loaders: [
           {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
